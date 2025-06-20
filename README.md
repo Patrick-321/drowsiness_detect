@@ -33,7 +33,9 @@ Watch the real-time driver drowsiness detection demo in action:
 
 ---
 
-## 📊 Dataset & Data Source
+## 📊 Model & Dataset & Data Source
+
+The model weights are included in the folder **"./model/eye_detect"** and **"./model/yawn_detect"**
 
 The training data for this project is available through the following source:
 
