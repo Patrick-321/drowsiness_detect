@@ -1,6 +1,6 @@
 # dataset.yaml
 path: datasets
-train: images/train
+train: ./runs/detecteye
 val: images/val
 # test: images/test
 nc: 2 # Número de clases; ajusta según el número total de clases en tus datos

@@ -65,8 +65,8 @@ class VideoThread(QThread):
 
         try:
             # Initialize YOLO models
-            self.detectyawn = YOLO("runs/detectyawn/train/weights/best.pt")
-            self.detecteye = YOLO("runs/detecteye/train/weights/best.pt")
+            self.detectyawn = YOLO("model/yawn_detect/best.pt")
+            self.detecteye = YOLO("model/eye_detect/best.pt")
         except Exception as e:
             print(f"Warning: Could not load YOLO models: {e}")
             self.detectyawn = None
@@ -169,10 +169,10 @@ class VideoThread(QThread):
             # Check for alerts
             current_time = time.time()
             if current_time - self.last_alert_time > self.alert_cooldown:
-                if round(self.microsleeps, 2) > 4.0:
+                if round(self.microsleeps, 2) > 2.0:
                     self.alertSignal.emit(2)  # Danger
                     self.last_alert_time = current_time
-                elif round(self.yawn_duration, 2) > 7.0:
+                elif round(self.yawn_duration, 2) > 2.0:
                     self.alertSignal.emit(1)  # Warning
                     self.last_alert_time = current_time
                 else:
