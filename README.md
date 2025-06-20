@@ -12,6 +12,54 @@ This project demonstrates a complete machine learning pipeline from data collect
 
 ---
 
+## 🎥 Demo
+
+Watch the real-time driver drowsiness detection demo in action:
+
+[![Watch the demo](https://img.youtube.com/vi/ynLUTRclpUc/0.jpg)](https://youtu.be/ynLUTRclpUc?si=gmcy-rB7S_dNzV-9)
+
+> Click the thumbnail above or follow this link: [https://youtu.be/ynLUTRclpUc?si=gmcy-rB7S_dNzV-9](https://youtu.be/ynLUTRclpUc?si=gmcy-rB7S_dNzV-9)
+
+
+---
+
+## Group member
+
+- **Ziwei Zhou** — Designing and training model
+- **Zuqing Meng** — Collecting and pre-processing data 
+- **Zitong He** — Finding data
+- **Yuxin Wang** — Finding data
+
+
+---
+
+## 📊 Dataset & Data Source
+
+The training data for this project is available through the following source:
+
+### **📁 Dataset Download**: 
+https://drive.google.com/file/d/1ZRrk3Sk-dTqiYTAQ-zdoAf_LQRxjAEKb/view?usp=sharing
+
+This dataset contains:
+- **Eye Detection Images**: Labeled images for open and closed eye classification
+- **Yawn Detection Images**: Labeled images for yawn detection
+- **Training Data**: Organized training and validation sets
+- **Annotations**: Bounding box coordinates and class labels
+
+To use this dataset:
+1. Download the dataset from the Google Drive link above
+2. Extract the files to your project directory
+3. Update the `dataset.yaml` configuration file with the correct paths
+4. Run the training script: `python train_customize.py`
+
+### **📁 Source of the Data**
+Kaggle: https://www.kaggle.com/datasets/cubeai/drowsiness-detection-for-yolov8
+
+HuggingFace: https://huggingface.co/datasets/MichalMlodawski/closed-open-eyes
+
+
+---
+
 ## ✨ Key Features
 
 ### 🎨 **Modern User Interface**
@@ -38,33 +86,30 @@ This project demonstrates a complete machine learning pipeline from data collect
 ## 📁 Project Structure
 
 ```
-final_project/
+drowsiness_detect/
 ├── 📱 Main Applications
-│   ├── drowsy_detector_cleaned.py    # Optimized main application with modern UI
-│   ├── drowsy_detector.py            # Original detection application
-│   └── test_interface.py             # Interface testing without camera
+│   └── drowsy_detector.py            # Main detection application with PyQt5 interface
 │
 ├── 🛠️ Data Processing Tools
-│   ├── auto_labelling.py             # Automated bounding box labeling
-│   ├── capture_data.py               # Video data collection utility
-│   ├── LoadData.ipynb                # Dataset loading and preprocessing
-│   └── RedirectData.ipynb            # Data organization and redirection
+│   ├── labelling.py                  # Automated bounding box labeling
+│   ├── capture_data_images.py        # Image data collection utility
+│   ├── LoadData.py                   # Dataset loading and preprocessing
+│   └── RedirectData.py               # Data organization and redirection
 │
 ├── 🎓 Training & Models
-│   ├── train.ipynb                   # YOLO model training notebook
+│   ├── train_customize.py            # Custom YOLO model training script
 │   ├── dataset.yaml                  # Dataset configuration
-│   └── runs/                         # Training results and model weights
-│       ├── detecteye/train/          # Eye detection model training
-│       └── detectyawn/train/         # Yawn detection model training
+│   └── model/                        # Trained model weights
+│       ├── eye_detect/               # Eye detection model
+│       │   ├── best.pt               # Best eye detection model
+│       │   └── last.pt               # Latest eye detection model
+│       └── yawn_detect/              # Yawn detection model
+│           ├── best.pt               # Best yawn detection model
+│           └── last.pt               # Latest yawn detection model
 │
 ├── 📋 Configuration & Documentation
 │   ├── requirements.txt              # Python dependencies
-│   ├── README.md                     # This documentation
-│   └── INTERFACE_IMPROVEMENTS.md     # Detailed interface documentation
-│
-└── 🎯 Model Weights
-    ├── runs/detecteye/train/weights/best.pt    # Best eye detection model
-    └── runs/detectyawn/train/weights/best.pt   # Best yawn detection model
+│   └── README.md                     # This documentation
 ```
 
 ---
@@ -81,7 +126,7 @@ final_project/
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd final_project
+   cd drowsiness_detect
    ```
 
 2. **Install dependencies:**
@@ -91,20 +136,14 @@ final_project/
 
 3. **Run the application:**
    ```bash
-   python drowsy_detector_cleaned.py
+   python drowsy_detector.py
    ```
-
-### Testing the Interface
-To test the UI components without camera access:
-```bash
-python test_interface.py
-```
 
 ---
 
 ## 🎮 Usage Guide
 
-### Main Application (`drowsy_detector_cleaned.py`)
+### Main Application (`drowsy_detector.py`)
 
 The main application features a modern two-panel interface:
 
@@ -121,8 +160,8 @@ The main application features a modern two-panel interface:
   - ⏳ **Yawn Duration**: Prolonged yawn detection
 
 - **Alert Banner**: Dynamic alerts for:
-  - ⚠️ **Warning**: Prolonged yawn detected (>7 seconds)
-  - 🚨 **Danger**: Microsleep risk detected (>4 seconds)
+  - ⚠️ **Warning**: Prolonged yawn detected (>2 seconds)
+  - 🚨 **Danger**: Microsleep risk detected (>2 seconds)
 
 - **Status Messages**: Context-aware feedback:
   - ✅ **Active**: System monitoring normally
@@ -131,27 +170,21 @@ The main application features a modern two-panel interface:
 
 ### Data Collection Tools
 
-#### `capture_data.py`
-Records video data for training:
+#### `capture_data_images.py`
+Records image data for training:
 ```bash
-python capture_data.py
+python capture_data_images.py
 ```
 
-#### `auto_labelling.py`
+#### `labelling.py`
 Automates bounding box generation using GroundingDINO:
 ```bash
-python auto_labelling.py
+python labelling.py
 ```
 
 ### Training Pipeline
 
-#### `train.ipynb`
-Comprehensive training notebook with:
-- Dataset preparation
-- Model configuration
-- Training execution
-- Performance evaluation
-- Results visualization
+#### `train_customize.py`
 
 ---
 
@@ -172,34 +205,33 @@ Comprehensive training notebook with:
 #### Eye Detection Model
 - **Architecture**: YOLOv8 classification
 - **Classes**: Open Eye (0), Close Eye (1)
-- **Training Data**: ~53,000 images
-- **Validation Data**: ~3,000 images
+- **Model Location**: `model/eye_detect/best.pt`
 - **Performance**: High accuracy for real-time detection
 
 #### Yawn Detection Model
 - **Architecture**: YOLOv8 classification
 - **Classes**: Yawn (0), No Yawn (1)
-- **Training Data**: Comprehensive yawn dataset
+- **Model Location**: `model/yawn_detect/best.pt`
 - **Performance**: Robust detection with confidence thresholds
 
 ### Interface Components
 
-#### StatusIndicator Class
+#### VideoThread Class
 ```python
-class StatusIndicator(QFrame):
-    - Real-time value display
-    - Progress bars with color coding
-    - Hover effects and animations
-    - Configurable thresholds
+class VideoThread(QThread):
+    - Multi-threaded video processing
+    - Real-time frame analysis
+    - State tracking and statistics
+    - Alert signal generation
 ```
 
-#### AlertBanner Class
+#### DrowsinessDetector Class
 ```python
-class AlertBanner(QFrame):
-    - Dynamic alert messages
-    - Multiple severity levels
-    - Smooth show/hide transitions
-    - Professional styling
+class DrowsinessDetector(QMainWindow):
+    - Main application window
+    - Video display panel
+    - Statistics dashboard
+    - Alert management system
 ```
 
 ---
@@ -248,7 +280,7 @@ class AlertBanner(QFrame):
 ### Dataset Configuration (`dataset.yaml`)
 ```yaml
 path: datasets
-train: images/train
+train: ./runs/detecteye
 val: images/val
 nc: 2
 names:
@@ -258,7 +290,7 @@ names:
 
 ### Model Parameters
 - **Detection Confidence**: 0.30 for eyes, 0.50 for yawns
-- **Alert Thresholds**: 7s for yawns, 4s for microsleeps
+- **Alert Thresholds**: 2s for yawns, 2s for microsleeps
 - **Frame Rate**: 45ms processing interval
 - **Queue Size**: 2 frames for smooth processing
 
@@ -283,8 +315,8 @@ names:
 3. **Model Loading Errors**
    ```bash
    # Verify model weights exist
-   ls runs/detecteye/train/weights/
-   ls runs/detectyawn/train/weights/
+   ls model/eye_detect/
+   ls model/yawn_detect/
    ```
 
 4. **Performance Issues**
@@ -292,10 +324,12 @@ names:
    - Close other applications
    - Check system resources
 
-### Debug Mode
+---
+
+## Run the application
 Run with verbose output:
 ```bash
-python drowsy_detector_cleaned.py --debug
+python drowsy_detector.py --debug
 ```
 
 ---
@@ -304,15 +338,13 @@ python drowsy_detector_cleaned.py --debug
 
 ### Eye Detection Model Performance
 - **Accuracy**: High precision for both open and closed eyes
-- **Confusion Matrix**: Available in `runs/detecteye/train/`
-- **Training Curves**: Loss, accuracy, and F1-score plots
-- **Validation Results**: Batch prediction visualizations
+- **Model Weights**: Available in `model/eye_detect/`
+- **Training Script**: `train_customize.py`
 
 ### Yawn Detection Model Performance
 - **Accuracy**: Robust detection across different conditions
+- **Model Weights**: Available in `model/yawn_detect/`
 - **Performance Metrics**: Precision, recall, and F1-score
-- **Training Analytics**: Comprehensive evaluation curves
-- **Model Weights**: Best performing model saved
 
 ---
 
@@ -350,16 +382,10 @@ We welcome contributions! Please see our contributing guidelines:
 ```bash
 # Clone and setup development environment
 git clone <repository-url>
-cd final_project
+cd drowsiness_detect
 pip install -r requirements.txt
-python test_interface.py  # Test the interface
+python drowsy_detector.py  # Test the application
 ```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
@@ -373,14 +399,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-## 📞 Support
 
-For questions, issues, or contributions:
-- **Issues**: Create a GitHub issue
-- **Discussions**: Use GitHub Discussions
-- **Email**: Contact the maintainers
-
----
 
 **Note**: This system is designed for educational and research purposes. For production use in safety-critical applications, additional validation and testing is recommended.
-
